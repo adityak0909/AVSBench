@@ -100,8 +100,8 @@ class B2_ResNet(nn.Module):
         self.layer3_2 = self._make_layer(Bottleneck, 256, 6, stride=2)
         self.layer4_2 = self._make_layer(Bottleneck, 512, 3, stride=2)
 
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
+        for m in self.modules():                                                    #initalize the weights and bias of the model using kaiming
+            if isinstance(m, nn.Conv2d): 
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
                 m.weight.data.normal_(0, math.sqrt(2. / n))
             elif isinstance(m, nn.BatchNorm2d):
@@ -111,7 +111,7 @@ class B2_ResNet(nn.Module):
     def _make_layer(self, block, planes, blocks, stride=1):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
-            downsample = nn.Sequential(
+            downsample = nn.Sequential(                                           
                 nn.Conv2d(self.inplanes, planes * block.expansion,
                           kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(planes * block.expansion),
