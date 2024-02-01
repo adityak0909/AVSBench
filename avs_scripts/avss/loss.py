@@ -14,7 +14,7 @@ def F10_IoU_BCELoss(pred_mask, ten_gt_masks, gt_temporal_mask_flag):
     """
     assert len(pred_mask.shape) == 4
     if ten_gt_masks.shape[1] == 1:
-        ten_gt_masks = ten_gt_masks.squeeze(1) # [bs*10, 224, 224]
+        ten_gt_masks = ten_gt_masks.squeeze(1) # [bs*10, 224, 224]                                                    #gets rid of all 1 dimensions
     # loss = nn.CrossEntropyLoss()(pred_mask, ten_gt_masks)
     #! notice:
     loss = nn.CrossEntropyLoss(reduction='none')(pred_mask, ten_gt_masks) # [bs*10, 224, 224]
@@ -42,7 +42,7 @@ def A_MaskedV_SimmLoss(pred_masks, a_fea_list, v_map_list, \
     assert len(pred_masks.shape) == 4
     bg_idx = (pred_masks.shape[1] - 1)
     pred_masks = torch.softmax(pred_masks, dim=1) # [B*10, NUM_CLASSES, 224, 224]
-    pred_masks = torch.argmax(pred_masks, dim=1).unsqueeze(1) # [B*10, 1, 224, 224]
+    pred_masks = torch.argmax(pred_masks, dim=1).unsqueeze(1) # [B*10, 1, 224, 224]                                            #argmax = max val of tensor, unsqueeze adds 1 dimension at index (X)
     pred_masks = (pred_masks != bg_idx).float() # [B*10, 1, 224, 224]
     total_loss = 0
 
