@@ -135,7 +135,7 @@ class Interpolate(nn.Module):
         return x
 
 
-class Pred_endecoder(nn.Module):
+class Pred_endecoder(nn.Module):                                                        #fixed input dimension, no upsampling, b2 backbone
     # resnet based encoder decoder
     def __init__(self, channel=256, config=None, tpavi_stages=[], tpavi_vv_flag=False, tpavi_va_flag=True):
         super(Pred_endecoder, self).__init__()
