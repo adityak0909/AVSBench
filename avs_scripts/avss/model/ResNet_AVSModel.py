@@ -96,7 +96,7 @@ class FeatureFusionBlock(nn.Module):
 
         output = self.resConfUnit2(output)
 
-        output = nn.functional.interpolate(
+        output = nn.functional.interpolate(                                                #down/up samples the input. in this case upsample by 2x
             output, scale_factor=2, mode="bilinear", align_corners=True
         )
 
@@ -210,7 +210,7 @@ class Pred_endecoder(nn.Module):
     def _make_pred_layer(self, block, dilation_series, padding_series, NoLabels, input_channel):
         return block(dilation_series, padding_series, NoLabels, input_channel)
 
-    def forward(self, x, audio_feature, vid_temporal_mask_flag):
+    def forward(self, x, audio_feature, vid_temporal_mask_flag):                                                #??
         # B, frame, C, H, W = x.shape
         # x = x.view(B*frame, C, H, W) # solve multi-gpu issuse
         # pdb.set_trace()
