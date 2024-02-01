@@ -56,7 +56,7 @@ class TPAVIModule(nn.Module):
         # function g in the paper which goes through conv. with kernel size 1
         self.g = conv_nd(in_channels=self.in_channels, out_channels=self.inter_channels, kernel_size=1)
 
-        if bn_layer:
+        if bn_layer: 
             self.W_z = nn.Sequential(
                     conv_nd(in_channels=self.inter_channels, out_channels=self.in_channels, kernel_size=1),
                     bn(self.in_channels)
@@ -91,7 +91,7 @@ class TPAVIModule(nn.Module):
         audio_temp = 0
         batch_size, C = x.size(0), x.size(1)
         if audio is not None:
-            # print('==> audio.shape', audio.shape)
+            # print('==> audio.shape', audio.shapes                                            #aligns channels, reshapes to match x, creates a tensor to match x
             H, W = x.shape[-2], x.shape[-1]
             audio_temp = self.align_channel(audio) # [bs, T, C]
             audio = audio_temp.permute(0, 2, 1) # [bs, C, T]
@@ -101,19 +101,19 @@ class TPAVIModule(nn.Module):
             audio = x
 
         # (N, C, THW)
-        g_x = self.g(x).view(batch_size, self.inter_channels, -1) # [bs, C, THW]
+        g_x = self.g(x).view(batch_size, self.inter_channels, -1) # [bs, C, THW]                #reshapes tp certain dimensions and flattens                        
         # print('g_x.shape', g_x.shape)
         # g_x = x.view(batch_size, C, -1)  # [bs, C, THW]
-        g_x = g_x.permute(0, 2, 1) # [bs, THW, C]
+        g_x = g_x.permute(0, 2, 1) # [bs, THW, C]                                            #rearrange the tensor dimensions. essentially we swap 2 <-> 3 element
         # pdb.set_trace()
 
-        if self.mode == "gaussian":
+        if self.mode == "gaussian":                                                              
             theta_x = x.view(batch_size, self.in_channels, -1)
             phi_x = audio.view(batch_size, self.in_channels, -1)
             theta_x = theta_x.permute(0, 2, 1)
             f = torch.matmul(theta_x, phi_x)
 
-        elif self.mode == "embedded" or self.mode == "dot":
+        elif self.mode == "embedded" or self.mode == "dot":                                          
             theta_x = self.theta(x).view(batch_size, self.inter_channels, -1) # [bs, C', THW]
             phi_x = self.phi(audio).view(batch_size, self.inter_channels, -1) # [bs, C', THW]
             theta_x = theta_x.permute(0, 2, 1) # [bs, THW, C']
@@ -154,6 +154,6 @@ class TPAVIModule(nn.Module):
         z = z.permute(0, 4, 1, 2, 3) # [bs, C, T, H, W]
         # pdb.set_trace()
         
-        return z, audio_temp
+        return z, audio_temp                                                 #takes video tensors and processes feature extraction through cnn and bn, then looks use audio for attention based features (taking a matmul to increase relationship).
 
 
